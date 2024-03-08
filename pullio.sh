@@ -169,7 +169,9 @@ export_env_vars() {
 
 sum="$(sha1sum "$0" | awk '{print $1}')"
 
-mapfile -t containers < <("${DOCKER_BINARY}" ps --format '{{.Names}}' | sort -k1 | awk '{ print $1 }')
+while IFS= read -r line; do
+    containers+=("$line")
+done < <("${DOCKER_BINARY}" ps --format '{{.Names}}' | sort -k1 | awk '{ print $1 }')
 
 for i in "${!containers[@]}"; do
     IFS=" " read -r container_name <<< "${containers[i]}"
